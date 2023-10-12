@@ -1,9 +1,9 @@
-# <project title>
+# Data Explorer Web App
 
 ## Authors
 Group <group number> : 
-- <first and last name> (<UTS student id>)
-- <first and last name> (<UTS student id>)
+- Lihini Nisansala Dematan Pitiyage ( 25024175 )
+- Wanzhen Chen (<UTS student id>)
 - <first and last name> (<UTS student id>)
 
 ## Description
