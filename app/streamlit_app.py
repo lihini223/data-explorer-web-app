@@ -45,11 +45,22 @@ with st.expander("ℹ️ - Streamlit application for performing data exploration
 # If a CSV file is uploaded, display the different tabs
 if st.session_state.file_path is not None:
     tab_df, tab_num, tab_text, tab_date = st.tabs(["DataFrame", "Numeric Serie", "Text Serie", "Datetime Serie"])
+    
+
     with tab_df:
-        display_tab_df_content(file_path=st.session_state.file_path)
+            display_tab_df_content(file_path=st.session_state.file_path)
     with tab_num:
-        display_tab_num_content(df=st.session_state.dataset.df)
+        if hasattr(st.session_state, 'dataset') and st.session_state.dataset is not None and hasattr(st.session_state.dataset, 'df') and st.session_state.dataset.df is not None:
+            display_tab_num_content(df=st.session_state.dataset.df)
+        else:
+            st.error('Dataset is not loaded or df attribute is not set.')
     with tab_text:
-        display_tab_text_content(df=st.session_state.dataset.df)
+        if hasattr(st.session_state, 'dataset') and st.session_state.dataset is not None and hasattr(st.session_state.dataset, 'df') and st.session_state.dataset.df is not None:
+            display_tab_text_content(df=st.session_state.dataset.df)
+        else:
+            st.error('Dataset is not loaded or df attribute is not set.')
     with tab_date:
-        display_tab_date_content(df=st.session_state.dataset.df)
+        if hasattr(st.session_state, 'dataset') and st.session_state.dataset is not None and hasattr(st.session_state.dataset, 'df') and st.session_state.dataset.df is not None:
+            display_tab_date_content(df=st.session_state.dataset.df)
+        else:
+            st.error('Dataset is not loaded or df attribute is not set.')
