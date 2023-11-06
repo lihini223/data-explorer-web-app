@@ -51,6 +51,15 @@ class Dataset:
         --------------------
         -> None
         """
+
+        self.set_df()
+        self.set_columns()
+        self.set_dimensions()
+        self.set_duplicates()
+        self.set_missing()
+        self.set_numeric()
+        self.set_text()
+        self.set_table()
         
         
     def set_df(self):
@@ -71,6 +80,11 @@ class Dataset:
         -> None
 
         """
+
+        if self.df is None:
+            self.df = pd.read_csv(self.file_path)
+        else:
+            pass
         
 
     def is_df_none(self):
@@ -91,6 +105,11 @@ class Dataset:
         -> (bool): Flag stating if self.df is empty or not
 
         """
+
+        if self.df is None:
+            return True
+        else:
+            return False
         
 
     def set_columns(self):
@@ -111,6 +130,11 @@ class Dataset:
         -> None
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            self.cols_list = self.df.columns.tolist()
         
 
     def set_dimensions(self):
@@ -131,6 +155,12 @@ class Dataset:
         -> None
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            self.n_rows = self.df.shape[0]
+            self.n_cols = self.df.shape[1]
         
 
     def set_duplicates(self):
@@ -151,6 +181,11 @@ class Dataset:
         -> None
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            self.n_duplicates = self.df.duplicated().sum()
         
 
     def set_missing(self):
@@ -171,6 +206,11 @@ class Dataset:
         -> None
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            self.n_missing = self.df.isna().any(axis=1).sum()
         
 
     def set_numeric(self):
@@ -191,6 +231,11 @@ class Dataset:
         -> None
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            self.n_num_cols = self.df.select_dtypes(include='number').shape[1]
         
 
     def set_text(self):
@@ -211,6 +256,11 @@ class Dataset:
         -> None
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            self.n_text_cols = self.df.select_dtypes(include='object').shape[1]
         
 
     def get_head(self, n=5):
@@ -231,6 +281,11 @@ class Dataset:
         -> (Pandas.DataFrame): First rows of dataframe
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            return self.df.head(n)
         
 
     def get_tail(self, n=5):
@@ -251,6 +306,11 @@ class Dataset:
         -> (Pandas.DataFrame): Last rows of dataframe
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            return self.df.tail(n)
         
 
     def get_sample(self, n=5):
@@ -271,6 +331,11 @@ class Dataset:
         -> (Pandas.DataFrame): Sampled dataframe
 
         """
+
+        if self.is_df_none():
+            pass
+        else:
+            return self.df.sample(n)
         
 
 
@@ -292,6 +357,21 @@ class Dataset:
         -> None
 
         """
+        # compute the Dataframe containing the list of columns with their data types and memory usage and store the results in the relevant attribute (self.table) if self.df is not empty nor None
+
+        if self.is_df_none():
+            pass
+        else:
+            self.table = self.df.dtypes.to_frame().reset_index().rename(columns={'index': 'Column', 0: 'Data Type'})
+            self.table['Memory Usage'] = self.df.memory_usage(deep=True)
+
+
+
+
+
+
+
+
 
 
     def get_summary(self):
@@ -307,3 +387,26 @@ class Dataset:
         -> (pd.DataFrame): Formatted dataframe to be displayed on the Streamlit app
 
         """
+
+        # two columns Description, Value
+        # Display number of rows 
+        # Display number of columns
+        # Display number of duplicated rows
+        # Display number of rows with missing values
+
+        if self.is_df_none():
+            return None
+
+        summary_data = {
+            'Description': ['Number of Rows', 'Number of Columns', 'Number of Duplicates', 'Number of Rows with Missing Values'],
+            'Value': [self.df.shape[0], self.df.shape[1], self.df.duplicated().sum(), self.df.isna().any(axis=1).sum()]
+        }
+
+        summary_df = pd.DataFrame(summary_data)
+
+        return summary_df
+
+    
+
+
+
