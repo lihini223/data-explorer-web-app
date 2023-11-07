@@ -1,6 +1,8 @@
 import pandas as pd
 import altair as alt
+import numpy as np
 
+from tab_df.logics import Dataset
 
 class NumericColumn:
     """
@@ -65,7 +67,9 @@ class NumericColumn:
         -> None
 
         """
-        
+
+        numeric_columns = df.select_dtypes(include = ['number']).columns.tolist()
+        self.cols_list = numeric_columns
 
     def set_data(self, col_name):
         """
@@ -85,6 +89,19 @@ class NumericColumn:
         -> None
 
         """
+        if col_name in self.cols_list:
+            self.serie = self.df[col_name]
+            self.set_unique()
+            self.set_missing()
+            self.set_zeros()
+            self.set_negatives()
+            self.set_mean()
+            self.set_std()
+            self.set_min()
+            self.set_max()
+            self.set_median()
+            self.set_histogram()
+            self.set_frequent()
 
     def convert_serie_to_num(self):
         """
@@ -104,7 +121,7 @@ class NumericColumn:
         -> None
 
         """
-        
+        self.serie = pd.to_numeric(self.serie, errors = 'coerce')
 
     def is_serie_none(self):
         """
@@ -124,7 +141,10 @@ class NumericColumn:
         -> (bool): Flag stating if the serie is empty or not
 
         """
-        
+        if self.serie is None:
+            return True
+        else:
+            return False
 
     def set_unique(self):
         """
@@ -144,7 +164,7 @@ class NumericColumn:
         -> None
 
         """
-        
+        self.n_unique = self.serie.nunique()
 
     def set_missing(self):
         """
@@ -164,7 +184,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.n_missing = self.serie.isna().sum()
 
     def set_zeros(self):
         """
@@ -184,7 +207,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.n_zeros = (self.serie == 0).sum()
 
     def set_negatives(self):
         """
@@ -204,7 +230,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.n_negatives = (self.serie < 0).sum()
 
     def set_mean(self):
         """
@@ -224,7 +253,11 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.col_mean = self.serie.mean()
+
 
     def set_std(self):
         """
@@ -244,7 +277,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.col_std = self.serie.std()
     
     def set_min(self):
         """
@@ -264,7 +300,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.col_min = self.serie.min()
 
     def set_max(self):
         """
@@ -284,7 +323,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.col_max = self.serie.max()
 
     def set_median(self):
         """
@@ -304,7 +346,10 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            self.col_median = self.serie.median()
 
     def set_histogram(self):
         """
@@ -324,7 +369,16 @@ class NumericColumn:
         -> None
 
         """
-        
+        if self.is_serie_none():
+            pass
+        else:
+            chart = alt.Chart(self.serie.reset_index()).mark_bar().encode(
+                x = alt.X('index:Q', bin = True),
+                y = alt.Y('count():Q', title = 'Count of Records')
+            ).properties(
+                title = 'Histogram'
+            )
+            self.histogram = chart
 
     def set_frequent(self, end=20):
         """
@@ -345,6 +399,14 @@ class NumericColumn:
         -> None
 
         """
+        if self.is_serie_none():
+            pass
+        else:
+            data_count = self.serie.value_counts()
+            frequent = data_count.reset_index()
+            frequent.columns = ['value', 'occurrence', 'percentage']
+            frequent['percentage'] = (frequent['occurrence'] / len(self.serie)) * 100
+            self.frequent = frequent
         
     def get_summary(self,):
         """
@@ -364,4 +426,16 @@ class NumericColumn:
         -> (pd.DataFrame): Formatted dataframe to be displayed on the Streamlit app
 
         """
-        
+        summary = [
+            ('Number of Unique Value', self.n_unique),
+            ('Number of Rows with Missing Values', self.n_missing),
+            ('Number of Rows with 0', self.n_zeros),
+            ('Number of Rows with Negative Values', self.n_negatives),
+            ('Average Value', self.col_mean),
+            ('Standard Deviation Value', self.col_std),
+            ('Minimum Value', self.col_min),
+            ('Maximum Value', self.col_max),
+            ('Median Value', self.col_median),            
+        ]
+        summary_df = pd.DataFrame(summary, columns = ['Description', 'Value'])
+        return summary_df
