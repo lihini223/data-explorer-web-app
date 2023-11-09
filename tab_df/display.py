@@ -55,14 +55,3 @@ def display_tab_df_content(file_path):
 
         elif method == "Sample":
             st.dataframe(dataset.get_sample(n_rows))
-
-            
-
-        # st.table(dataset.get_head())
-
-        
-# selected_column = st.selectbox('Select a numeric column:', num_col_list)
-#     if selected_column is not None:
-#         numeric_column.set_data(selected_column)
-#         with st.expander('Numeric Column Summary'):
-#             st.table(numeric_column.get_summary())
