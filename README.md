@@ -39,19 +39,19 @@ This code checks if st.session_state has an attribute dataset, if st.session_sta
 While the key objectives have been achieved, there are rooms for further development which may improve both usability and user interface of the web application, as well as enhance user satisfaction. For wider data science projects, web applications should explore the capabilities of data visualization such as interactive charts and graphs with customized visualization options such as chart colors, or chart types. Plotly library is recommended to integrate for interactive charts. Moreover, since the current maximum file size is limited to 200MB, it may be better if the tool in the future projects can support non-technical users to handle larger datasets. In larger projects, advanced statistical analysis tools should be integrated to help users extract more insights from the dataset, including descriptive statistics, machine learning models, and correlations.
 
 ## How to Setup
-Step 1:  Make sure conda is installed on your computer. 
+- Step 1:  Make sure conda is installed on your computer. 
 https://www.anaconda.com/download
-Step 2: Go to https://github.com/lihini223/data-explorer-web-app.git and download the git repository.
-Step 3: Use the requirements.yaml file to create the conda environment using the following command.
+- Step 2: Go to https://github.com/lihini223/data-explorer-web-app.git and download the git repository.
+- Step 3: Use the requirements.yaml file to create the conda environment using the following command.
 conda env create -f requirements.yaml
 
 ## How to Run the Program
-Step 1:  Activate the conda environment.
-            Conda activate dsp_at3
-Step 2: navigate to the app folder
-            cd app
-Step 3:Run the streamlit application using the following command in the terminal
-            Run streamlit run streamlit_app.py
+- Step 1:  Activate the conda environment.
+Conda activate dsp_at3
+- Step 2: navigate to the app folder
+cd app
+- Step 3:Run the streamlit application using the following command in the terminal
+Run streamlit run streamlit_app.py
 
 ## Project Structure
 - README.md: A file contains overview of the project includes project description, guide to setup and run the project, project structure, citations, etc.
