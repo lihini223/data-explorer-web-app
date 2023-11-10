@@ -1,7 +1,7 @@
 import pandas as pd
 import altair as alt
 import numpy as np
-
+import os
 from tab_df.logics import Dataset
 
 class NumericColumn:
@@ -68,8 +68,20 @@ class NumericColumn:
 
         """
 
+
+        # If df is None, load the uploaded CSV file as Pandas DataFrame
+        # if self.file_path is not None or self.df is None:
+        #     self.df = pd.read_csv(self.file_path)
+        # else:
+        #     raise ValueError('File path is None.')
+
+        # Find all columns of numeric data type
+        # self.cols_list = list(self.df.select_dtypes(include=np.number).columns)
+
+
         numeric_columns = df.select_dtypes(include = ['number']).columns.tolist()
         self.cols_list = numeric_columns
+
 
     def set_data(self, col_name):
         """
@@ -121,7 +133,10 @@ class NumericColumn:
         -> None
 
         """
-        self.serie = pd.to_numeric(self.serie, errors = 'coerce')
+
+
+        self.serie = pd.to_numeric(self.serie, errors='coerce')
+
 
     def is_serie_none(self):
         """
@@ -144,7 +159,8 @@ class NumericColumn:
         if self.serie is None:
             return True
         else:
-            return False
+            return False 
+
 
     def set_unique(self):
         """
@@ -438,4 +454,7 @@ class NumericColumn:
             ('Median Value', self.col_median),            
         ]
         summary_df = pd.DataFrame(summary, columns = ['Description', 'Value'])
+
         return summary_df
+
+        
