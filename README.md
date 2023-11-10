@@ -66,7 +66,7 @@ Run streamlit run streamlit_app.py
   - logics.py: Define the NumericColumn class that manages and provides various statistical information about numeric columns in a dataset.
 - tab_text
   - display.py: Display overall information and histogram of object columns in the dataset.
- - logics.py: Define the TextColumn class that manages and provides various statistical information about object columns in a dataset.
+  - logics.py: Define the TextColumn class that manages and provides various statistical information about object columns in a dataset.
 - tab_date
   - display.py: Display overall information and histogram of datetime columns in the dataset.
   - logics.py: Define the DateTime class that manages provides various statistical information about datetime columns in a dataset.
