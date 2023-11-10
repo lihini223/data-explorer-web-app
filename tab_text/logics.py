@@ -64,6 +64,14 @@ class TextColumn:
         -> None
 
         """
+        # If df attribute is not set, load the uploaded CSV file as Pandas DataFrame
+        if self.df is None:
+            self.df = pd.read_csv(self.file_path)
+        
+        # Find all columns of text data type
+        self.cols_list = self.df.select_dtypes(include=['object']).columns.tolist()
+
+
         
 
     def set_data(self, col_name):
@@ -86,6 +94,44 @@ class TextColumn:
         --------------------
         -> None
         """
+        # Set self.serie attribute with the relevant column from the dataframe
+        self.serie = self.df[col_name]
+
+        # Convert serie to text data type
+        self.convert_serie_to_text()
+
+        # Compute the number of unique value of a serie
+        self.set_unique()
+
+        # Compute the number of missing value of a serie
+        self.set_missing()
+
+        # Compute the number of times a serie has empty value
+        self.set_empty()
+
+        # Compute the mode value of a serie
+        self.set_mode()
+
+        # Compute the number of times a serie has only space characters
+        self.set_whitespace()
+
+        # Compute the number of times a serie has only lowercase characters
+        self.set_lowercase()
+
+        # Compute the number of times a serie has only uppercase characters
+        self.set_uppercase()
+
+        # Compute the number of times a serie has only alphabetical characters
+        self.set_alphabet()
+
+        # Compute the number of times a serie has only digit characters
+        self.set_digit()
+
+        # Compute the Altair barchart displaying the count for each value of a serie
+        self.set_barchart()
+
+        # Compute the Dataframe containing the most frequest value of a serie
+        self.set_frequent()
         
 
     def convert_serie_to_text(self):
@@ -106,6 +152,8 @@ class TextColumn:
         -> None
 
         """
+        # Convert serie to text data type
+        self.serie = self.serie.astype(str)
         
 
     def is_serie_none(self):
@@ -126,6 +174,11 @@ class TextColumn:
         -> (bool): Flag stating if the serie is empty or not
 
         """
+        # Check if serie is empty or none
+        if self.serie is None or self.serie.empty:
+            return True
+        else:
+            return False
         
 
     def set_unique(self):
@@ -146,6 +199,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_unique = None
+        else:
+            self.n_unique = self.serie.nunique()
         
 
     def set_missing(self):
@@ -166,6 +224,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_missing = None
+        else:
+            self.n_missing = self.serie.isna().sum()
         
 
     def set_empty(self):
@@ -186,6 +249,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_empty = None
+        else:
+            self.n_empty = self.serie.str.isspace().sum()
         
 
     def set_mode(self):
@@ -206,6 +274,12 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_mode = None
+        else:
+            self.n_mode = self.serie.mode().values[0]
+
         
 
     def set_whitespace(self):
@@ -226,6 +300,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_space = None
+        else:
+            self.n_space = self.serie.str.isspace().sum()
         
 
     def set_lowercase(self):
@@ -246,6 +325,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_lower = None
+        else:
+            self.n_lower = self.serie.str.islower().sum()
         
 
     def set_uppercase(self):
@@ -266,6 +350,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_upper = None
+        else:
+            self.n_upper = self.serie.str.isupper().sum()
         
     
     def set_alphabet(self):
@@ -286,6 +375,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_alpha = None
+        else:
+            self.n_alpha = self.serie.str.isalpha().sum()
         
 
     def set_digit(self):
@@ -306,6 +400,11 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            self.n_digit = None
+        else:
+            self.n_digit = self.serie.str.isdigit().sum()
         
 
     def set_barchart(self):  
@@ -326,6 +425,21 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if not self.is_serie_none():
+            # Compute the Altair barchart displaying the count for each value of a serie
+            self.barchart = alt.Chart(self.serie.to_frame().reset_index()).mark_bar().encode(
+                x=alt.X('index', axis=alt.Axis(title='Value')),
+                y=alt.Y('count()', axis=alt.Axis(title='Count')),
+            ).properties(
+                width=600,
+                height=400
+            ).configure_axis(
+                labelFontSize=12,
+                titleFontSize=12
+            ).configure_title(
+                fontSize=16
+            )
         
       
     def set_frequent(self, end=20):
@@ -347,6 +461,12 @@ class TextColumn:
         -> None
 
         """
+        # Check if serie is empty or none
+        if not self.is_serie_none():
+            # Compute the Dataframe containing the most frequest value of a serie
+            self.frequent = self.serie.value_counts().reset_index().rename(columns={'index': 'value', 'value': 'occurrence'}).head(end)
+            self.frequent['percentage'] = self.frequent['occurrence'] / self.frequent['occurrence'].sum() * 100
+            self.frequent = self.frequent.round(2)
         
 
     def get_summary(self):
@@ -367,4 +487,22 @@ class TextColumn:
         -> (pd.DataFrame): Formatted dataframe to be displayed on the Streamlit app
 
         """
+        # Check if serie is empty or none
+        if self.is_serie_none():
+            return pd.DataFrame(columns=['Description', 'Value'])
+        else:
+            return pd.DataFrame(
+                columns=['Description', 'Value'],
+                data=[
+                    ['Number of unique values', self.n_unique],
+                    ['Number of missing values', self.n_missing],
+                    ['Number of empty values', self.n_empty],
+                    ['Mode value', self.n_mode],
+                    ['Number of values with only space characters', self.n_space],
+                    ['Number of values with only lowercase characters', self.n_lower],
+                    ['Number of values with only uppercase characters', self.n_upper],
+                    ['Number of values with only alphabetical characters', self.n_alpha],
+                    ['Number of values with only digit characters', self.n_digit]
+                ]
+            )
         
