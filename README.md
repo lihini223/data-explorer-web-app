@@ -16,10 +16,10 @@ This web application consists of two sections:
 
 1. Menu for uploading a CSV file
 2. Container with 4 tabs:
-tab_df: Overall information of the dataset and interactive exploration of its content
-tab_num: Selection of a numeric column and display data analysis results
-tab_text: Selection of a text column and display data analysis results
-tab_date: Selection of a datetime column and display data analysis results
+- tab_df: Overall information of the dataset and interactive exploration of its content
+- tab_num: Selection of a numeric column and display data analysis results
+- tab_text: Selection of a text column and display data analysis results
+- tab_date: Selection of a datetime column and display data analysis results
 
 ### Challenges
 Firstly, we created the conda environment named dsp_at3 on a computer which is running Windows OS and export it to txt file called requirement.txt. However, when trying to create the environment using the requirement.txt file on MacOS, and the computers would get errors. Hence, the reason is there are build strings attached to the modules in the requirements.txt file and we resolved it by using the following command: conda env export --no-builds > environment.yml.
