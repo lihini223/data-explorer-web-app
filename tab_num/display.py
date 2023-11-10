@@ -30,6 +30,7 @@ def display_tab_num_content(file_path=None, df=None):
 
     """
 
+
     # If file_path is not None, instantiate Dataset class and save it into Streamlit session state
     if df is not None:
         df = st.session_state.dataset
@@ -65,3 +66,4 @@ def display_tab_num_content(file_path=None, df=None):
         with st.expander("ℹ️ - Frequent", expanded=True): st.write(numeric_column.frequent())
     
     
+

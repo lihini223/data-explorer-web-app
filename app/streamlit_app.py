@@ -16,6 +16,7 @@ from tab_num.display import display_tab_num_content
 from tab_text.display import display_tab_text_content
 from tab_date.display import display_tab_date_content
 
+
 # Set Streamlit Page Configuration
 st.set_page_config(
     page_title="CSV Explorer",
@@ -42,25 +43,27 @@ st.title("CSV Explorer")
 with st.expander("ℹ️ - Streamlit application for performing data exploration on a CSV", expanded=True):
     st.session_state.file_path = st.file_uploader("Choose a CSV file")
 
+# import Dataset class
+from tab_df.logics import Dataset
+
+
 # If a CSV file is uploaded, display the different tabs
 if st.session_state.file_path is not None:
+
     tab_df, tab_num, tab_text, tab_date = st.tabs(["DataFrame", "Numeric Serie", "Text Serie", "Datetime Serie"])
     
-
     with tab_df:
-            display_tab_df_content(file_path=st.session_state.file_path)
+        display_tab_df_content(file_path=st.session_state.file_path)
+
+    # # create dataset object
+    dataset = pd.read_csv(st.session_state.file_path)
+    st.session_state.dataset = dataset
+
     with tab_num:
-        if hasattr(st.session_state, 'dataset') and st.session_state.dataset is not None and hasattr(st.session_state.dataset, 'df') and st.session_state.dataset.df is not None:
-            display_tab_num_content(df=st.session_state.dataset.df)
-        else:
-            st.error('Dataset is not loaded or df attribute is not set.')
+        display_tab_num_content(file_path=st.session_state.file_path, df=st.session_state.dataset)
+
     with tab_text:
-        if hasattr(st.session_state, 'dataset') and st.session_state.dataset is not None and hasattr(st.session_state.dataset, 'df') and st.session_state.dataset.df is not None:
-            display_tab_text_content(df=st.session_state.dataset.df)
-        else:
-            st.error('Dataset is not loaded or df attribute is not set.')
+        display_tab_text_content(file_path=st.session_state.file_path, df=st.session_state.dataset)
+
     with tab_date:
-        if hasattr(st.session_state, 'dataset') and st.session_state.dataset is not None and hasattr(st.session_state.dataset, 'df') and st.session_state.dataset.df is not None:
-            display_tab_date_content(df=st.session_state.dataset.df)
-        else:
-            st.error('Dataset is not loaded or df attribute is not set.')
+        display_tab_date_content(file_path=st.session_state.file_path, df=st.session_state.dataset)
